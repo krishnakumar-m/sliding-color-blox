@@ -1,0 +1,27 @@
+body
+{
+  font-size: 40pt;
+}
+.ball {
+  border-radius: 25px;
+}
+#tunneltb{
+  background-color:Black;
+  margin-left:25px;
+}
+#tunneltb td{
+  width:40px;
+  height:40px;
+}
+#score {
+  position:fixed;
+  top:50px;
+  left:100px;
+  opacity: 0.5;
+  font-size:80pt;
+  text-align:right;
+  color:White;
+  z-index:100;
+  width:100px;
+  height:100px;
+}
