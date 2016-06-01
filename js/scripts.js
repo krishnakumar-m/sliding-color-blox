@@ -27,6 +27,7 @@ var tun = {
     height : 16,
     distance : 20,
     nel : [],
+    dontmove :false,
     init : function()
 	{
 	    /*this.cvs = document.getElementById('test');
@@ -37,6 +38,9 @@ var tun = {
 	    var self = this;
 	    var hndl = window.setInterval(function()
 		{
+		    if(self.dontmove) {
+			return;
+		    }
 		    self.collisionCheck();
 		    self.display();
 		    if (ball.y > (self.bottom + self.height / 2))
@@ -280,23 +284,77 @@ window.onerror = function(a, b, c, d, e)
     };
 function bindEvents()
     {
-	document.addEventListener('click', function (e)
+	/*document.addEventListener('click', function (e)
+	 {
+	 if (hasClass(e.target, 'left'))
+	 {
+	 var j = e.target.getAttribute('row');
+	 //alert(j);
+	 var leftChar =tun.nel[j].charAt(1);
+	 tun.nel[j] = '<' + tun.nel[j].substr(2, tun.width - 3) + leftChar + '>';
+	 }
+	 else if (hasClass(e.target, 'right'))
+	 {
+	 var j = e.target.getAttribute('row');
+	 //alert(j);
+	 var rightChar =tun.nel[j].charAt(tun.width - 2);
+	 tun.nel[j] = '<' + rightChar + tun.nel[j].substr(1, tun.width - 3) + '>';
+	 }
+	 }, false);*/
+
+	document.getElementById('tunneltb').onclick = function(e)
 	    {
-		if (hasClass(e.target, 'left'))
+		tun.dontmove = true;
+		
+		var moveLeft = e.clientX < window.innerWidth/2;
+		if (ball.dy > 0)
 		    {
-			var j = e.target.getAttribute('row');
-			//alert(j);
-			var leftChar =tun.nel[j].charAt(1);
-			tun.nel[j] = '<' + tun.nel[j].substr(2, tun.width - 3) + leftChar + '>';
+			for (var y=ball.y;y < tun.height + tun.bottom;y++)
+			    {
+				var j = y - tun.bottom;
+				var row = tun.nel[j];
+				//strip left and right
+				row = row.substring(1, tun.width - 1);
+				if (!/^\s+$/.test(row))
+				    {
+					if (moveLeft)
+					    {
+						var leftChar =tun.nel[j].charAt(1);
+						tun.nel[j] = '<' + tun.nel[j].substr(2, tun.width - 3) + leftChar + '>';
+					    }
+					else
+					    {
+						var rightChar =tun.nel[j].charAt(tun.width - 2);
+						tun.nel[j] = '<' + rightChar + tun.nel[j].substr(1, tun.width - 3) + '>';
+					    }
+					break;
+				    }
+			    }
+		    } else {
+			for (var y=ball.y;y >= tun.bottom;y--)
+			    {
+				var j = y - tun.bottom;
+				var row = tun.nel[j];
+				//strip left and right
+				row = row.substring(1, tun.width - 1);
+				if (!/^\s+$/.test(row))
+				    {
+					if (moveLeft)
+					    {
+						var leftChar =tun.nel[j].charAt(1);
+						tun.nel[j] = '<' + tun.nel[j].substr(2, tun.width - 3) + leftChar + '>';
+					    }
+					else
+					    {
+						var rightChar =tun.nel[j].charAt(tun.width - 2);
+						tun.nel[j] = '<' + rightChar + tun.nel[j].substr(1, tun.width - 3) + '>';
+					    }
+					break;
+				    }
+			    }
 		    }
-		else if (hasClass(e.target, 'right'))
-		    {
-			var j = e.target.getAttribute('row');
-			//alert(j);
-			var rightChar =tun.nel[j].charAt(tun.width - 2);
-			tun.nel[j] = '<' + rightChar + tun.nel[j].substr(1, tun.width - 3) + '>';
-		    }
-	    }, false);
+		    tun.dontmove = false;
+	    };
 
     }
 
