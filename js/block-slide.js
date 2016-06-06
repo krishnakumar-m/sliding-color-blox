@@ -161,12 +161,12 @@ var tun = {
 
     moveUp : function()
 	{
-	    /*this.bottom++;
-	    this.nel.push(this.generateRow(this.height + this.bottom - 1));
-	    this.nel.shift();*/
 	    for(i=0;i<this.blocks.length;i++) {
 		
 		this.blocks[i].move();
+		 if(this.blocks[i].y > H) {
+         this.blocks.splice(i,1);
+        }
 	    }
 	},
 
@@ -269,6 +269,21 @@ var tun = {
 	}
 
     };
+    
+    function bindEvents() {
+     document.getElementById('tnlcvs').onmousedown = function(event) {
+         for(i=0;i<tun.blocks.length;i++) {
+           tun.blocks[i].dx+=((event.clientX>W/2)?1:-1);
+         }
+     };
+     document.getElementById('tnlcvs').onmouseup = function() {
+        for(i=0;i<tun.blocks.length;i++) {
+           tun.blocks[i].dx=0;
+         }
+     };
+     
+    }
+    
     
     function test() {
 	
