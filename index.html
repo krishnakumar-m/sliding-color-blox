@@ -3,11 +3,17 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/styles.css" rel="stylesheet">
-      <script src="js/scripts.js"></script>
+      <script src="js/block-slide.js"></script>
   </head>
-  <body onload="tun.init();" >
-    <table id="tunneltb"></table>
-    <div id='score'>0</div>
-
+  <script>
+    window.onerror = function(a, b, c, d, e)
+    {
+	alert([a,b,c,d,e].join(' '));
+    };
+    </script>
+  <body onload="test();" >
+  <!--  <table id="tunneltb"></table>
+    <div id='score'>0</div>-->
+    <canvas id="tnlcvs" style='background-color:black;'></canvas>
   </body>
 </html>		

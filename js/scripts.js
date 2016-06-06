@@ -24,7 +24,7 @@ var score = {
 var tun = {
     bottom : 0,
     width : 21,
-    height : 16,
+    height : 12,
     distance : 20,
     nel : [],
     dontmove :false,
@@ -284,23 +284,6 @@ window.onerror = function(a, b, c, d, e)
     };
 function bindEvents()
     {
-	/*document.addEventListener('click', function (e)
-	 {
-	 if (hasClass(e.target, 'left'))
-	 {
-	 var j = e.target.getAttribute('row');
-	 //alert(j);
-	 var leftChar =tun.nel[j].charAt(1);
-	 tun.nel[j] = '<' + tun.nel[j].substr(2, tun.width - 3) + leftChar + '>';
-	 }
-	 else if (hasClass(e.target, 'right'))
-	 {
-	 var j = e.target.getAttribute('row');
-	 //alert(j);
-	 var rightChar =tun.nel[j].charAt(tun.width - 2);
-	 tun.nel[j] = '<' + rightChar + tun.nel[j].substr(1, tun.width - 3) + '>';
-	 }
-	 }, false);*/
 
 	document.getElementById('tunneltb').onclick = function(e)
 	    {
