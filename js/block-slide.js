@@ -1,5 +1,5 @@
 var colorMaster = ['Violet','Indigo','Blue','Green','Yellow','Orange','Red'];
-var W,H;
+var W,H,um = 3,bmu=5;
 var Shape = function(x, y, dx, dy, color)
     {
 	this.x = x;
@@ -54,11 +54,9 @@ Block.prototype.move = function()
     
 Block.prototype.draw = function()
     {
-	//alert([this.x,this.y,this.dx,this.dy,this.color,this.w,this.h].join(','));
 	ctx.beginPath();
 	ctx.fillStyle = this.color;
 	var xs = this.x + this.w - W;
-	//alert(xs);
 	if (xs > 0)
 	    {
 		ctx.rect(this.x, this.y, W - this.x, this.h);
@@ -77,7 +75,7 @@ Block.prototype.draw = function()
 Ball.prototype.draw = function() {
     ctx.beginPath();
     ctx.fillStyle = this.color;
-    ctx.arc(this.x,this.y-tun.top,this.r,0,2*Math.PI);
+    ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
     ctx.fill();
 };
     
@@ -125,41 +123,35 @@ var tun = {
 	    ctx = cvs.getContext('2d');
 	    W = cvs.width = window.innerWidth;
 	    this.bottom = H = cvs.height = window.innerHeight;
+	    blockWidth = W/6;
+	    blockHeight = H/20;
+	    
 	    
 	    this.generate();
-	    this.ball = new Ball(W/2, H,-5,-5,'white',10);
-	    this.display();
+	    this.ball = new Ball(W/2, H-150,-bmu,-bmu,'white',10);
 	    bindEvents();
 	    var self = this;
 	    var hndl = window.setInterval(function()
 		{
-		  /*  if (self.dontmove)
-			{
-			    return;
-			}*/
 		    self.collisionCheck();
-		    self.display();
 		    self.ball.move();
-		   if (self.ball.y <= (self.bottom/2))
+		    if (self.ball.y <= (self.bottom/2))
 			{
 			    self.moveUp();
 		        }
-		  /*  if (ball.y <= self.bottom)
-			{
+		    self.display();
+		    
+		   
+		  if (self.ball.y > H)
+	                {
 			    window.clearInterval(hndl);
-			}*/
+			}
 		}, 300);
 	},
     generate : function()
 	{
-            var blockWidth = W/6;
-	    var blockHeight = H/20;
-	    
 	    for (var i=0;i < H ;i+=4*blockHeight)
 		{
-		    /*for(var j=0;j<W;j+=(blockWidth)) {
-			this.blocks.push(new Block(j,i,0,0,colorMaster[Math.floor(Math.random()*7)],blockWidth,blockHeight));
-		    }*/
 		    this.generateRow(i);
 		}
 	},
@@ -167,11 +159,11 @@ var tun = {
     moveUp : function()
 	{
 	    var createNew = false;
-	    this.top--;
-	    this.bottom = this.top + H;
+	   /* this.top--;
+	    this.bottom = this.top + H;*/
 	    for(i=this.blocks.length-1;i>=0;i--) {
-		this.blocks[i].dy = 5;
-		this.blocks[i].move();
+		//this.blocks[i].dy = um;
+		this.blocks[i].y+=um;
 		 if(this.blocks[i].y > this.bottom) {
                      this.blocks.splice(i,1);
 		     createNew = true;
@@ -184,57 +176,42 @@ var tun = {
 
     generateRow : function(x)
 	{
-//	    var str='';
-//
-//	    if (i % 5 === 0)
-//		{
-//		    str += '<';
-//		    str += this.createWall();
-//		    str += '>';
-//		}
-//	    else
-//		{
-//		    str += '#';
-//		    for (k = 1;k < this.width - 1;k++)
-//			{
-//			    str += ' ';
-//			}
-//	            str += '#';
-//		}
-//	    return str;
-	    var blockWidth = W/6;
-	    var blockHeight = H/20;
 	    for(var j=0;j<W;j+=(blockWidth)) {
 		this.blocks.push(new Block(j,x,0,0,colorMaster[Math.floor(Math.random()*7)],blockWidth,blockHeight));
             }
-	},
-    createWall:function()
-	{
-	    var str="",k;
-	    var len = colorMaster.length;
-	    var prev = -1,indx;
-	    for (k = 1;k < this.width - 1;k++)
-		{
-		    do{
-			    indx = Math.floor(Math.random() * len);
-			}while(prev == indx);
-		    str += colorMaster[indx];
-		    prev = indx;
-		}
-	    return str;
 	},
     collisionCheck : function()
 	{
 	    var ballNextX = this.ball.x + this.ball.dx;
 	    var ballNextY = this.ball.y + this.ball.dy;
-	    var top = this.bottom + this.height - 1;
-	    var collide = false;
+	    
 	    if (ballNextX + this.ball.r > W || ballNextX < this.ball.r)
 		{
 		    this.ball.bounceX();
-		    //collide = true;
 		} 
 	    
+           var newBall = new Ball(ballNextX,ballNextY,0,0,'',this.ball.r);
+	   for(i=this.blocks.length-1;i>0;i--) {
+	       var thisBlock = this.blocks[i];
+	       var result = collisionTest(newBall,thisBlock);
+               if(result) {
+		   
+		   if(this.ball.color == thisBlock.color) {
+		       this.blocks.splice(i,1);
+		   } else {
+		       this.ball.color = thisBlock.color;
+		       if(result.dx) {
+			   this.ball.bounceX();
+		       }
+		       if(result.dy) {
+		           this.ball.bounceY();
+		       }
+		   }
+		   
+		   break;
+	       }
+           }
+		
 	  /*  var thisBlock = this.nel[ballNextY - this.bottom].charAt(ballNextX);
 	    if (thisBlock != '#' && thisBlock != ' ')
 		{
@@ -290,9 +267,9 @@ var tun = {
     };
     
     function bindEvents() {
-     document.getElementById('tnlcvs').onmousedown = function(event) {
+     /*document.getElementById('tnlcvs').onmousedown = function(event) {
          for(i=0;i<tun.blocks.length;i++) {
-           tun.blocks[i].dx+=((event.clientX>W/2)?5:-5);
+           tun.blocks[i].dx+=((event.clientX>W/2)?um:-um);
 	   tun.blocks[i].move();
          }
      };
@@ -300,10 +277,11 @@ var tun = {
         for(i=0;i<tun.blocks.length;i++) {
            tun.blocks[i].dx=0;
          }
-     };
+     };*/
      document.getElementById('tnlcvs').ontouchstart = function(event) {
          for(i=0;i<tun.blocks.length;i++) {
-           tun.blocks[i].dx+=((event.clientX>W/2)?5:-5);
+	   var touchX = event.changedTouches[0].pageX;
+           tun.blocks[i].dx=((touchX>W/2)?um:-um);
 	   tun.blocks[i].move();
          }
      };
@@ -316,13 +294,29 @@ var tun = {
     }
     
     
-    function test() {
+    function collisionTest(circle,rect) {
+	var distX = Math.abs(circle.x - rect.x - rect.w/2);
+	var distY = Math.abs(circle.y - rect.y - rect.h/2);
 	
-	tun.init();
-	//alert(W);
-	//alert(H);
-	/*var ball = new Ball(50,200,1,1,'red',20);
-	ball.draw();
-	var block = new Block(W-7,20,1,1,'blue',25,30);
-	block.draw();*/
+	if(distX > (circle.r+ rect.w/2)) {
+	    return null;
+	}
+	if(distY > (circle.r+ rect.h/2)) {
+	    return null;
+	}
+	if(distX <= rect.w/2) {
+	    return {dx : false,dy : true};
+	}
+	if(distY <= rect.h/2) {
+	    return {dx : true,dy : false};
+	}
+	
+	
+	var dx = distX - rect.w/2;
+	var dy = distY - rect.h/2;
+	if((dx*dx + dy*dy)<= (circle.r*circle.r)) {
+	    return {dx : true,dy : true};
+	} else {
+	    null;
+	}
     }
