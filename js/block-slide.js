@@ -61,14 +61,14 @@ Block.prototype.draw = function()
 	//alert(xs);
 	if (xs > 0)
 	    {
-		ctx.rect(this.x, this.y-tun.top, W - this.x, this.h);
+		ctx.rect(this.x, this.y, W - this.x, this.h);
 		ctx.fill();
-		ctx.rect(0, this.y-tun.top, xs, this.h);
+		ctx.rect(0, this.y, xs, this.h);
 		ctx.fill();
 	    }
 	else
 	    {
-		ctx.rect(this.x, this.y-tun.top, this.w, this.h);
+		ctx.rect(this.x, this.y, this.w, this.h);
 		ctx.fill();
 	    }
 
@@ -157,45 +157,56 @@ var tun = {
 	    
 	    for (var i=0;i < H ;i+=4*blockHeight)
 		{
-		    for(var j=0;j<W;j+=(blockWidth)) {
+		    /*for(var j=0;j<W;j+=(blockWidth)) {
 			this.blocks.push(new Block(j,i,0,0,colorMaster[Math.floor(Math.random()*7)],blockWidth,blockHeight));
-		    }
+		    }*/
+		    this.generateRow(i);
 		}
 	},
 
     moveUp : function()
 	{
+	    var createNew = false;
 	    this.top--;
 	    this.bottom = this.top + H;
 	    for(i=this.blocks.length-1;i>=0;i--) {
-		this.blocks[i].dy = -1;
+		this.blocks[i].dy = 5;
 		this.blocks[i].move();
 		 if(this.blocks[i].y > this.bottom) {
                      this.blocks.splice(i,1);
+		     createNew = true;
                  }
+	    }
+	    if(createNew) {
+	        this.generateRow(0);
 	    }
 	},
 
-    generateRow : function(i)
+    generateRow : function(x)
 	{
-	    var str='';
-
-	    if (i % 5 === 0)
-		{
-		    str += '<';
-		    str += this.createWall();
-		    str += '>';
-		}
-	    else
-		{
-		    str += '#';
-		    for (k = 1;k < this.width - 1;k++)
-			{
-			    str += ' ';
-			}
-	            str += '#';
-		}
-	    return str;
+//	    var str='';
+//
+//	    if (i % 5 === 0)
+//		{
+//		    str += '<';
+//		    str += this.createWall();
+//		    str += '>';
+//		}
+//	    else
+//		{
+//		    str += '#';
+//		    for (k = 1;k < this.width - 1;k++)
+//			{
+//			    str += ' ';
+//			}
+//	            str += '#';
+//		}
+//	    return str;
+	    var blockWidth = W/6;
+	    var blockHeight = H/20;
+	    for(var j=0;j<W;j+=(blockWidth)) {
+		this.blocks.push(new Block(j,x,0,0,colorMaster[Math.floor(Math.random()*7)],blockWidth,blockHeight));
+            }
 	},
     createWall:function()
 	{
@@ -218,7 +229,7 @@ var tun = {
 	    var ballNextY = this.ball.y + this.ball.dy;
 	    var top = this.bottom + this.height - 1;
 	    var collide = false;
-	    if (ballNextX + this.ball.r >= W || ballNextX <= this.ball.r)
+	    if (ballNextX + this.ball.r > W || ballNextX < this.ball.r)
 		{
 		    this.ball.bounceX();
 		    //collide = true;
