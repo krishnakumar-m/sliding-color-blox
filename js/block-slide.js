@@ -61,14 +61,14 @@ Block.prototype.draw = function()
 	//alert(xs);
 	if (xs > 0)
 	    {
-		ctx.rect(this.x, this.y, W - this.x, this.h);
+		ctx.rect(this.x, this.y-tun.top, W - this.x, this.h);
 		ctx.fill();
-		ctx.rect(0, this.y, xs, this.h);
+		ctx.rect(0, this.y-tun.top, xs, this.h);
 		ctx.fill();
 	    }
 	else
 	    {
-		ctx.rect(this.x, this.y, this.w, this.h);
+		ctx.rect(this.x, this.y-tun.top, this.w, this.h);
 		ctx.fill();
 	    }
 
@@ -77,7 +77,7 @@ Block.prototype.draw = function()
 Ball.prototype.draw = function() {
     ctx.beginPath();
     ctx.fillStyle = this.color;
-    ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
+    ctx.arc(this.x,this.y-tun.top,this.r,0,2*Math.PI);
     ctx.fill();
 };
     
@@ -110,6 +110,7 @@ var score = {
     };
 
 var tun = {
+    top : 0,
     bottom : 0,
     width : 21,
     height : 16,
@@ -123,24 +124,27 @@ var tun = {
 	    cvs = document.getElementById('tnlcvs');
 	    ctx = cvs.getContext('2d');
 	    W = cvs.width = window.innerWidth;
-	    H = cvs.height = window.innerHeight;
+	    this.bottom = H = cvs.height = window.innerHeight;
+	    
 	    this.generate();
+	    this.ball = new Ball(W/2, H,-5,-5,'white',10);
 	    this.display();
-	  //  bindEvents();
+	    bindEvents();
 	    var self = this;
 	    var hndl = window.setInterval(function()
 		{
 		  /*  if (self.dontmove)
 			{
 			    return;
-			}
-		    self.collisionCheck();*/
+			}*/
+		    self.collisionCheck();
 		    self.display();
-		 /*   if (ball.y > (self.bottom + self.height / 2))
-			{*/
+		    self.ball.move();
+		   if (self.ball.y <= (self.bottom/2))
+			{
 			    self.moveUp();
-			/*}
-		    if (ball.y <= self.bottom)
+		        }
+		  /*  if (ball.y <= self.bottom)
 			{
 			    window.clearInterval(hndl);
 			}*/
@@ -154,19 +158,21 @@ var tun = {
 	    for (var i=0;i < H ;i+=4*blockHeight)
 		{
 		    for(var j=0;j<W;j+=(blockWidth)) {
-			this.blocks.push(new Block(j,i,-1,1,colorMaster[Math.floor(Math.random()*7)],blockWidth,blockHeight));
+			this.blocks.push(new Block(j,i,0,0,colorMaster[Math.floor(Math.random()*7)],blockWidth,blockHeight));
 		    }
 		}
 	},
 
     moveUp : function()
 	{
-	    for(i=0;i<this.blocks.length;i++) {
-		
+	    this.top--;
+	    this.bottom = this.top + H;
+	    for(i=this.blocks.length-1;i>=0;i--) {
+		this.blocks[i].dy = -1;
 		this.blocks[i].move();
-		 if(this.blocks[i].y > H) {
-         this.blocks.splice(i,1);
-        }
+		 if(this.blocks[i].y > this.bottom) {
+                     this.blocks.splice(i,1);
+                 }
 	    }
 	},
 
@@ -208,16 +214,17 @@ var tun = {
 	},
     collisionCheck : function()
 	{
-	    var ballNextX = ball.x + ball.dx;
-	    var ballNextY = ball.y + ball.dy;
+	    var ballNextX = this.ball.x + this.ball.dx;
+	    var ballNextY = this.ball.y + this.ball.dy;
 	    var top = this.bottom + this.height - 1;
 	    var collide = false;
-	    if (ballNextX >= this.width - 1 || ballNextX <= 0)
+	    if (ballNextX + this.ball.r >= W || ballNextX <= this.ball.r)
 		{
-		    ball.bounceX();
+		    this.ball.bounceX();
 		    //collide = true;
 		} 
-	    var thisBlock = this.nel[ballNextY - this.bottom].charAt(ballNextX);
+	    
+	  /*  var thisBlock = this.nel[ballNextY - this.bottom].charAt(ballNextX);
 	    if (thisBlock != '#' && thisBlock != ' ')
 		{
 		    if (thisBlock == ball.color)
@@ -256,7 +263,7 @@ var tun = {
 		} 
 
 	    //if(!collide) {
-	    ball.move();
+	    ball.move();*/
 	    //}
 	},
 	
@@ -266,6 +273,7 @@ var tun = {
 		
 		this.blocks[i].draw();
 	    }
+	    this.ball.draw();
 	}
 
     };
@@ -273,10 +281,22 @@ var tun = {
     function bindEvents() {
      document.getElementById('tnlcvs').onmousedown = function(event) {
          for(i=0;i<tun.blocks.length;i++) {
-           tun.blocks[i].dx+=((event.clientX>W/2)?1:-1);
+           tun.blocks[i].dx+=((event.clientX>W/2)?5:-5);
+	   tun.blocks[i].move();
          }
      };
      document.getElementById('tnlcvs').onmouseup = function() {
+        for(i=0;i<tun.blocks.length;i++) {
+           tun.blocks[i].dx=0;
+         }
+     };
+     document.getElementById('tnlcvs').ontouchstart = function(event) {
+         for(i=0;i<tun.blocks.length;i++) {
+           tun.blocks[i].dx+=((event.clientX>W/2)?5:-5);
+	   tun.blocks[i].move();
+         }
+     };
+     document.getElementById('tnlcvs').ontouchend = function() {
         for(i=0;i<tun.blocks.length;i++) {
            tun.blocks[i].dx=0;
          }
