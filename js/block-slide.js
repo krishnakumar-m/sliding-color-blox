@@ -8,27 +8,27 @@ var Shape = function(x, y, dx, dy, color)
 	this.dy = dy;
 	this.color = color;
     };
-    
+
 Shape.prototype.move = function()
     {
 	this.x += this.dx;
 	this.y += this.dy;
     };
-    
-var Ball = function(x, y, dx, dy, color,r)
+
+var Ball = function(x, y, dx, dy, color, r)
     {
 	Shape.call(this, x, y, dx, dy, color);
 	this.r = r;
     };
 
-var Block = function(x, y, dx, dy, color,w, h)
+var Block = function(x, y, dx, dy, color, w, h)
     {
 	Shape.call(this, x, y, dx, dy, color);
 	this.w = w;
 	this.h = h;
     };
-    
-    
+
+
 Ball.prototype = Object.create(Shape.prototype);
 Block.prototype = Object.create(Shape.prototype);
 
@@ -47,11 +47,13 @@ Block.prototype.bottom = function()
 Block.prototype.move = function()
     {
 	this.x += this.dx;
-	if(this.x>W) { this.x = 0;}
-	else if(this.x<0) {this.x = W;}
+	if (this.x > W)
+	    { this.x = 0;}
+	else if (this.x < 0)
+	    {this.x = W;}
 	this.y += this.dy;
     };
-    
+
 Block.prototype.draw = function()
     {
 	ctx.beginPath();
@@ -61,24 +63,30 @@ Block.prototype.draw = function()
 	if (xs > 0)
 	    {
 		ctx.rect(this.x, this.y, W - this.x, this.h);
+		ctx.fill();
+	        ctx.stroke();
 		ctx.rect(0, this.y, xs, this.h);
+		ctx.fill();
+	        ctx.stroke();
 	    }
 	else
 	    {
 		ctx.rect(this.x, this.y, this.w, this.h);
+		ctx.fill();
+	        ctx.stroke();
 	    }
-        ctx.fill();
-	ctx.stroke();
+        
     };
 
-Ball.prototype.draw = function() {
-    ctx.beginPath();
-    ctx.fillStyle = this.color;
-    ctx.arc(this.x,this.y,this.r,0,2*Math.PI);
-    ctx.fill();
-};
-    
-    
+Ball.prototype.draw = function()
+    {
+	ctx.beginPath();
+	ctx.fillStyle = this.color;
+	ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+	ctx.fill();
+    };
+
+
 Ball.prototype.bounceX = function()
     {
 	this.dx = -this.dx;
@@ -122,26 +130,26 @@ var tun = {
 	    ctx = cvs.getContext('2d');
 	    W = cvs.width = window.innerWidth;
 	    this.bottom = H = cvs.height = window.innerHeight;
-	    blockWidth = W/6;
-	    blockHeight = H/20;
-	    
-	    
+	    blockWidth = W / 6;
+	    blockHeight = H / 20;
+
+
 	    this.generate();
-	    this.ball = new Ball(W/2, H-150,-bmu,-bmu,'white',10);
+	    this.ball = new Ball(W / 2, H - 150, -bmu, -bmu, 'white', 10);
 	    bindEvents();
 	    var self = this;
 	    var hndl = window.setInterval(function()
 		{
 		    self.collisionCheck();
 		    self.ball.move();
-		    if (self.ball.y <= (self.bottom/2))
+		    if (self.ball.y <= (self.bottom / 2))
 			{
 			    self.moveUp();
 		        }
 		    self.display();
-		    
-		   
-		  if (self.ball.y > H)
+
+
+		    if (self.ball.y > H)
 	                {
 			    window.clearInterval(hndl);
 			}
@@ -149,7 +157,7 @@ var tun = {
 	},
     generate : function()
 	{
-	    for (var i=0;i < H ;i+=4*blockHeight)
+	    for (var i=0;i < H ;i += 4 * blockHeight)
 		{
 		    this.generateRow(i);
 		}
@@ -158,176 +166,207 @@ var tun = {
     moveUp : function()
 	{
 	    var createNew = false;
-	   /* this.top--;
-	    this.bottom = this.top + H;*/
-	    for(i=this.blocks.length-1;i>=0;i--) {
-		//this.blocks[i].dy = um;
-		this.blocks[i].y+=um;
-		 if(this.blocks[i].y > this.bottom) {
-                     this.blocks.splice(i,1);
-		     createNew = true;
-                 }
-	    }
-	    if(createNew) {
-	        this.generateRow(0);
-	    }
+	    /* this.top--;
+	     this.bottom = this.top + H;*/
+	    for (i = this.blocks.length - 1;i >= 0;i--)
+		{
+		    //this.blocks[i].dy = um;
+		    this.blocks[i].y += um;
+		    if (this.blocks[i].y > this.bottom)
+			{
+			    this.blocks.splice(i, 1);
+			    createNew = true;
+			}
+	            
+		}
+	    if (createNew)
+		{
+		    this.generateRow(0);
+		}
 	},
 
     generateRow : function(x)
 	{
-	    for(var j=0;j<W;j+=(blockWidth)) {
-		this.blocks.push(new Block(j,x,0,0,colorMaster[Math.floor(Math.random()*7)],blockWidth,blockHeight));
-            }
+	    for (var j=0;j < W;j += (blockWidth))
+		{
+		    this.blocks.push(new Block(j, x, 0, 0, colorMaster[Math.floor(Math.random() * 7)], blockWidth, blockHeight));
+		}
 	},
     collisionCheck : function()
 	{
 	    var ballNextX = this.ball.x + this.ball.dx;
 	    var ballNextY = this.ball.y + this.ball.dy;
-	    
+
 	    if (ballNextX + this.ball.r > W || ballNextX < this.ball.r)
 		{
 		    this.ball.bounceX();
 		} 
-	    
-           var newBall = new Ball(ballNextX,ballNextY,0,0,'',this.ball.r),result;
-	   for(i=this.blocks.length-1;i>0;i--) {
-	       var thisBlock = this.blocks[i];
-	       if(thisBlock.right() < thisBlock.x) {
-      result = collisionTest(newBall, new Block(0,thisBlock.y,0,0,'',thisBlock.right(),thisBlock.h)) || collisionTest(newBall, new Block(thisBlock.x,thisBlock.y,0,0,'',thisBlock.w-thisBlock.right(),thisBlock.h));
-      } else {
-      result = collisionTest(newBall, thisBlock);
-      }
-               if(result) {
-		   
-		   if(this.ball.color == thisBlock.color) {
-		       this.blocks.splice(i,1);
-		   } else {
-		       this.ball.color = thisBlock.color;
-		       if(result.dx) {
-			   this.ball.bounceX();
-		       }
-		       if(result.dy) {
-		           this.ball.bounceY();
-		       }
-		   }
-		   
-		   break;
-	       }
-           }
-		
-	  /*  var thisBlock = this.nel[ballNextY - this.bottom].charAt(ballNextX);
-	    if (thisBlock != '#' && thisBlock != ' ')
+
+	    var newBall = new Ball(ballNextX, ballNextY, 0, 0, '', this.ball.r),result;
+	    for (i = this.blocks.length - 1;i > 0;i--)
 		{
-		    if (thisBlock == ball.color)
+		    var thisBlock = this.blocks[i];
+		    if (thisBlock.right() < thisBlock.x)
 			{
-			    var str = this.nel[ballNextY - this.bottom];
-			    this.nel[ballNextY - this.bottom] = str.substr(0, ballNextX) + ' ' + str.substr(ballNextX + 1);
-			    score.multiplier = score.multiplier + ball.dy;
-			    if (score.multiplier < 0)
-				{
-				    score.multiplier = 0;
-				}
-			    score.total += score.block * score.multiplier;
-			    if (score.total < 0)
-				{
-				    score.total = 0;
-				}
-			    document.getElementById('score').innerHTML = score.total;
+			    result = collisionTest(newBall, new Block(0, thisBlock.y, 0, 0, '', thisBlock.right(), thisBlock.h)) || collisionTest(newBall, new Block(thisBlock.x, thisBlock.y, 0, 0, '', thisBlock.w - thisBlock.right(), thisBlock.h));
 			}
 		    else
 			{
-			    //ball.color = thisBlock;
-			    ball.color = this.nel[ballNextY - this.bottom].charAt(ball.x);
-			    ball.bounceY();
-			    score.total += score.minus;
-			    if (score.total < 0)
+			    result = collisionTest(newBall, thisBlock);
+			}
+		    if (result)
+			{
+
+			    if (this.ball.color === thisBlock.color)
 				{
-				    score.total = 0;
+				    this.blocks.splice(i, 1);
+				   // this.blocks[i] = undefined;
 				}
-			    document.getElementById('score').innerHTML = score.total;
+			    else
+				{
+				    this.ball.color = thisBlock.color;
+				    if (result.dx)
+					{
+					    this.ball.bounceX();
+					}
+				    if (result.dy)
+					{
+					    this.ball.bounceY();
+					}
+				}
+
+			    break;
 			}
 		}
-	    else if (ballNextY <= 0 || ballNextY >= top)
-		{
-		    ball.bounceY();
-		    //collide = true;
-		} 
 
-	    //if(!collide) {
-	    ball.move();*/
+	    /*  var thisBlock = this.nel[ballNextY - this.bottom].charAt(ballNextX);
+	     if (thisBlock != '#' && thisBlock != ' ')
+	     {
+	     if (thisBlock == ball.color)
+	     {
+	     var str = this.nel[ballNextY - this.bottom];
+	     this.nel[ballNextY - this.bottom] = str.substr(0, ballNextX) + ' ' + str.substr(ballNextX + 1);
+	     score.multiplier = score.multiplier + ball.dy;
+	     if (score.multiplier < 0)
+	     {
+	     score.multiplier = 0;
+	     }
+	     score.total += score.block * score.multiplier;
+	     if (score.total < 0)
+	     {
+	     score.total = 0;
+	     }
+	     document.getElementById('score').innerHTML = score.total;
+	     }
+	     else
+	     {
+	     //ball.color = thisBlock;
+	     ball.color = this.nel[ballNextY - this.bottom].charAt(ball.x);
+	     ball.bounceY();
+	     score.total += score.minus;
+	     if (score.total < 0)
+	     {
+	     score.total = 0;
+	     }
+	     document.getElementById('score').innerHTML = score.total;
+	     }
+	     }
+	     else if (ballNextY <= 0 || ballNextY >= top)
+	     {
+	     ball.bounceY();
+	     //collide = true;
+	     } 
+
+	     //if(!collide) {
+	     ball.move();*/
 	    //}
 	},
-	
-	display : function() {
-	    ctx.clearRect(0,0,W,H);
-	    for(i=0;i<this.blocks.length;i++) {
-		
-		this.blocks[i].draw();
-	    }
+
+    display : function()
+	{
+	    ctx.clearRect(0, 0, W, H);
+	    for (i = 0;i < this.blocks.length;i++)
+		{
+		    this.blocks[i].draw();
+		}
 	    this.ball.draw();
 	}
 
     };
-    
-    function bindEvents() {
-     /*document.getElementById('tnlcvs').onmousedown = function(event) {
-    hndl = window.setInterval(function() {
-      console.log('mousedown ' + event.clientX);
-      for (i = 0; i < tun.blocks.length; i++) {
-        tun.blocks[i].dx = ((event.clientX > W / 2) ? um : -um);
-        tun.blocks[i].move();
-      }
-    }, 200);
-  }
-  document.getElementById('tnlcvs').onmouseup = function() {
-    window.clearInterval(hndl);
-    for (i = 0; i < tun.blocks.length; i++) {
-      tun.blocks[i].dx = 0;
-    }
-  };*/
-     document.getElementById('tnlcvs').ontouchstart = function(event) {
-	 var touchX = event.changedTouches[0].pageX;
+
+function bindEvents()
+    {
+	/*document.getElementById('tnlcvs').onmousedown = function(event) {
 	 hndl = window.setInterval(function() {
-         for(i=0;i<tun.blocks.length;i++) {
-	   
-           tun.blocks[i].dx=((touchX>W/2)?um:-um);
-	   tun.blocks[i].move();
-         }
-	 },200);
-     };
-     document.getElementById('tnlcvs').ontouchend = function() {
+	 console.log('mousedown ' + event.clientX);
+	 for (i = 0; i < tun.blocks.length; i++) {
+	 tun.blocks[i].dx = ((event.clientX > W / 2) ? um : -um);
+	 tun.blocks[i].move();
+	 }
+	 }, 200);
+	 }
+	 document.getElementById('tnlcvs').onmouseup = function() {
 	 window.clearInterval(hndl);
-        for(i=0;i<tun.blocks.length;i++) {
-           tun.blocks[i].dx=0;
-         }
-     };
-     
+	 for (i = 0; i < tun.blocks.length; i++) {
+	 tun.blocks[i].dx = 0;
+	 }
+	 };*/
+	document.getElementById('tnlcvs').ontouchstart = function(event)
+	    {
+		var touchX = event.changedTouches[0].pageX;
+		hndlt = window.setInterval(function()
+		    {
+			for (i = 0;i < tun.blocks.length;i++)
+			    {
+				    tun.blocks[i].dx = ((touchX > W / 2) ?um: -um);
+				    tun.blocks[i].move();
+			    }
+		    }, 200);
+	    };
+	document.getElementById('tnlcvs').ontouchend = function()
+	    {
+		window.clearInterval(hndlt);
+		for (i = 0;i < tun.blocks.length;i++)
+		    {
+			tun.blocks[i].dx = 0;
+		    }
+	    };
+
     }
-    
-    
-    function collisionTest(circle,rect) {
-	var distX = Math.abs(circle.x - rect.x - rect.w/2);
-	var distY = Math.abs(circle.y - rect.y - rect.h/2);
-	
-	if(distX > (circle.r+ rect.w/2)) {
-	    return null;
-	}
-	if(distY > (circle.r+ rect.h/2)) {
-	    return null;
-	}
-	if(distX <= rect.w/2) {
-	    return {dx : false,dy : true};
-	}
-	if(distY <= rect.h/2) {
-	    return {dx : true,dy : false};
-	}
-	
-	
-	var dx = distX - rect.w/2;
-	var dy = distY - rect.h/2;
-	if((dx*dx + dy*dy)<= (circle.r*circle.r)) {
-	    return {dx : true,dy : true};
-	} else {
-	    null;
-	}
+
+
+function collisionTest(circle, rect)
+    {
+	var distX = Math.abs(circle.x - rect.x - rect.w / 2);
+	var distY = Math.abs(circle.y - rect.y - rect.h / 2);
+
+	if (distX > (circle.r + rect.w / 2))
+	    {
+		return null;
+	    }
+	if (distY > (circle.r + rect.h / 2))
+	    {
+		return null;
+	    }
+	if (distX <= rect.w / 2)
+	    {
+		return {dx : false,dy : true};
+	    }
+	if (distY <= rect.h / 2)
+	    {
+		return {dx : true,dy : false};
+	    }
+
+
+	var dx = distX - rect.w / 2;
+	var dy = distY - rect.h / 2;
+	if ((dx * dx + dy * dy) <= (circle.r * circle.r))
+	    {
+		return {dx : true,dy : true};
+	    }
+	else
+	    {
+		return null;
+	    }
+	    
     }
