@@ -1,4 +1,4 @@
-var colorMaster = ['Violet','Indigo','Blue','Green','Yellow','Orange','Red'];
+var colorMaster = ['Violet','Indigo','Blue','Green','Yellow','Red'];
 var W,H,um = 3,bmu=5;
 var Shape = function(x, y, dx, dy, color)
     {
@@ -56,20 +56,19 @@ Block.prototype.draw = function()
     {
 	ctx.beginPath();
 	ctx.fillStyle = this.color;
+	ctx.strokeStyle = 'White';
 	var xs = this.x + this.w - W;
 	if (xs > 0)
 	    {
 		ctx.rect(this.x, this.y, W - this.x, this.h);
-		ctx.fill();
 		ctx.rect(0, this.y, xs, this.h);
-		ctx.fill();
 	    }
 	else
 	    {
 		ctx.rect(this.x, this.y, this.w, this.h);
-		ctx.fill();
 	    }
-
+        ctx.fill();
+	ctx.stroke();
     };
 
 Ball.prototype.draw = function() {
@@ -283,13 +282,17 @@ var tun = {
     }
   };*/
      document.getElementById('tnlcvs').ontouchstart = function(event) {
+	 var touchX = event.changedTouches[0].pageX;
+	 hndl = window.setInterval(function() {
          for(i=0;i<tun.blocks.length;i++) {
-	   var touchX = event.changedTouches[0].pageX;
+	   
            tun.blocks[i].dx=((touchX>W/2)?um:-um);
 	   tun.blocks[i].move();
          }
+	 },200);
      };
      document.getElementById('tnlcvs').ontouchend = function() {
+	 window.clearInterval(hndl);
         for(i=0;i<tun.blocks.length;i++) {
            tun.blocks[i].dx=0;
          }
