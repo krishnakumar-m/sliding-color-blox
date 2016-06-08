@@ -189,10 +189,14 @@ var tun = {
 		    this.ball.bounceX();
 		} 
 	    
-           var newBall = new Ball(ballNextX,ballNextY,0,0,'',this.ball.r);
+           var newBall = new Ball(ballNextX,ballNextY,0,0,'',this.ball.r),result;
 	   for(i=this.blocks.length-1;i>0;i--) {
 	       var thisBlock = this.blocks[i];
-	       var result = collisionTest(newBall,thisBlock);
+	       if(thisBlock.right() < thisBlock.x) {
+      result = collisionTest(newBall, new Block(0,thisBlock.y,0,0,'',thisBlock.right(),thisBlock.h)) || collisionTest(newBall, new Block(thisBlock.x,thisBlock.y,0,0,'',thisBlock.w-thisBlock.right(),thisBlock.h));
+      } else {
+      result = collisionTest(newBall, thisBlock);
+      }
                if(result) {
 		   
 		   if(this.ball.color == thisBlock.color) {
