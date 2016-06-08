@@ -268,16 +268,20 @@ var tun = {
     
     function bindEvents() {
      /*document.getElementById('tnlcvs').onmousedown = function(event) {
-         for(i=0;i<tun.blocks.length;i++) {
-           tun.blocks[i].dx+=((event.clientX>W/2)?um:-um);
-	   tun.blocks[i].move();
-         }
-     };
-     document.getElementById('tnlcvs').onmouseup = function() {
-        for(i=0;i<tun.blocks.length;i++) {
-           tun.blocks[i].dx=0;
-         }
-     };*/
+    hndl = window.setInterval(function() {
+      console.log('mousedown ' + event.clientX);
+      for (i = 0; i < tun.blocks.length; i++) {
+        tun.blocks[i].dx = ((event.clientX > W / 2) ? um : -um);
+        tun.blocks[i].move();
+      }
+    }, 200);
+  }
+  document.getElementById('tnlcvs').onmouseup = function() {
+    window.clearInterval(hndl);
+    for (i = 0; i < tun.blocks.length; i++) {
+      tun.blocks[i].dx = 0;
+    }
+  };*/
      document.getElementById('tnlcvs').ontouchstart = function(event) {
          for(i=0;i<tun.blocks.length;i++) {
 	   var touchX = event.changedTouches[0].pageX;
