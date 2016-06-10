@@ -1,5 +1,47 @@
+
+var viewPort = {
+    cvs : null,
+    ctx : null,
+    init : function(cvsid) {
+	this.cvs = document.getElementById(cvsid);
+	this.ctx = this.cvs.getContext('2d');
+    },
+    rect : function(x,y,w,h,strokeStyle,fillStyle) {
+	var ctx = this.ctx;
+	ctx.beginPath();
+        ctx.rect(x, y, w, h);
+        ctx.closePath();
+	if(fillStyle) {
+	    ctx.fillStyle = fillStyle;
+            ctx.fill();
+	}
+	if(strokeStyle) {
+	    ctx.strokeStyle = strokeStyle;
+	    ctx.stroke();
+	}
+    },
+    circle : function(x,y,r,strokeStyle,fillStyle) {
+	var ctx = this.ctx;
+	ctx.beginPath();
+        ctx.arc(x, y, r, 0, 2 * Math.PI);
+        ctx.closePath();
+	if(fillStyle) {
+	    ctx.fillStyle = fillStyle;
+            ctx.fill();
+	}
+	if(strokeStyle) {
+	    ctx.strokeStyle = strokeStyle;
+	    ctx.stroke();
+	}
+    },
+    clear : function() {
+	this.ctx.clearRect(0,0,this.cvs.width,this.cvs.height);
+    }
+};
+
 var colorMaster = ['Violet','Indigo','Blue','Green','Yellow','Red'];
 var W,H,um = 3,bmu=5;
+
 var Shape = function(x, y, dx, dy, color)
     {
 	this.x = x;
@@ -19,6 +61,7 @@ var Ball = function(x, y, dx, dy, color, r)
     {
 	Shape.call(this, x, y, dx, dy, color);
 	this.r = r;
+	this.speed = bmu;
     };
 
 var Block = function(x, y, dx, dy, color, w, h)
@@ -56,34 +99,22 @@ Block.prototype.move = function()
 
 Block.prototype.draw = function()
     {
-	ctx.beginPath();
-	ctx.fillStyle = this.color;
-	ctx.strokeStyle = 'White';
 	var xs = this.x + this.w - W;
 	if (xs > 0)
 	    {
-		ctx.rect(this.x, this.y, W - this.x, this.h);
-		ctx.fill();
-	        ctx.stroke();
-		ctx.rect(0, this.y, xs, this.h);
-		ctx.fill();
-	        ctx.stroke();
+		viewPort.rect(this.x, this.y, W - this.x, this.h,'White',this.color);
+	        viewPort.rect(0, this.y, xs, this.h,'White',this.color);
 	    }
 	else
 	    {
-		ctx.rect(this.x, this.y, this.w, this.h);
-		ctx.fill();
-	        ctx.stroke();
+	       viewPort.rect(this.x, this.y, this.w, this.h,'White',this.color);
 	    }
         
     };
 
 Ball.prototype.draw = function()
     {
-	ctx.beginPath();
-	ctx.fillStyle = this.color;
-	ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
-	ctx.fill();
+	viewPort.circle(this.x, this.y, this.r, 0, 2 * Math.PI,null,this.color);
     };
 
 
@@ -126,26 +157,28 @@ var tun = {
     ball : null,
     init : function()
 	{
-	    cvs = document.getElementById('tnlcvs');
-	    ctx = cvs.getContext('2d');
-	    W = cvs.width = window.innerWidth;
-	    this.bottom = H = cvs.height = window.innerHeight;
-	    blockWidth = W / 6;
+	    viewPort.init('tnlcvs');
+	    W = viewPort.cvs.width = window.innerWidth;
+	    this.bottom = H = viewPort.cvs.height = window.innerHeight;
+	    blockWidth = W / 4;
 	    blockHeight = H / 20;
 
-
 	    this.generate();
+	    
 	    this.ball = new Ball(W / 2, H - 150, -bmu, -bmu, 'white', 10);
 	    bindEvents();
 	    var self = this;
 	    var hndl = window.setInterval(function()
 		{
-		    self.collisionCheck();
-		    self.ball.move();
+		    
 		    if (self.ball.y <= (self.bottom / 2))
 			{
 			    self.moveUp();
 		        }
+			
+		    self.collisionCheck();
+		    self.ball.move();
+		    
 		    self.display();
 
 
@@ -166,11 +199,9 @@ var tun = {
     moveUp : function()
 	{
 	    var createNew = false;
-	    /* this.top--;
-	     this.bottom = this.top + H;*/
+	    
 	    for (i = this.blocks.length - 1;i >= 0;i--)
 		{
-		    //this.blocks[i].dy = um;
 		    this.blocks[i].y += um;
 		    if (this.blocks[i].y > this.bottom)
 			{
@@ -187,9 +218,10 @@ var tun = {
 
     generateRow : function(x)
 	{
+	    var len = colorMaster.length;
 	    for (var j=0;j < W;j += (blockWidth))
 		{
-		    this.blocks.push(new Block(j, x, 0, 0, colorMaster[Math.floor(Math.random() * 7)], blockWidth, blockHeight));
+		    this.blocks.push(new Block(j, x, 0, 0, colorMaster[Math.floor(Math.random() * len)], blockWidth, blockHeight));
 		}
 	},
     collisionCheck : function()
@@ -220,7 +252,6 @@ var tun = {
 			    if (this.ball.color === thisBlock.color)
 				{
 				    this.blocks.splice(i, 1);
-				   // this.blocks[i] = undefined;
 				}
 			    else
 				{
@@ -284,7 +315,7 @@ var tun = {
 
     display : function()
 	{
-	    ctx.clearRect(0, 0, W, H);
+	    viewPort.clear();
 	    for (i = 0;i < this.blocks.length;i++)
 		{
 		    this.blocks[i].draw();
