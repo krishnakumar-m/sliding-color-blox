@@ -2,9 +2,11 @@
 var viewPort = {
     cvs : null,
     ctx : null,
-    init : function(cvsid) {
+    init : function(cvsid,w,h) {
 	this.cvs = document.getElementById(cvsid);
 	this.ctx = this.cvs.getContext('2d');
+	this.cvs.width = w || 0;
+	this.cvs.height = h || 0;
     },
     rect : function(x,y,w,h,strokeStyle,fillStyle) {
 	var ctx = this.ctx;
@@ -36,6 +38,10 @@ var viewPort = {
     },
     clear : function() {
 	this.ctx.clearRect(0,0,this.cvs.width,this.cvs.height);
+    },
+    text : function(txt,x,y,style) {
+	this.ctx.fillStyle = style;
+	this.ctx.fillText(txt,x,y);
     }
 };
 
@@ -104,17 +110,20 @@ Block.prototype.draw = function()
 	    {
 		viewPort.rect(this.x, this.y, W - this.x, this.h,'White',this.color);
 	        viewPort.rect(0, this.y, xs, this.h,'White',this.color);
+		viewPort.text(this.color,this.x, this.y,'White');
+		viewPort.text(this.color,0,this.y,'White');
 	    }
 	else
 	    {
 	       viewPort.rect(this.x, this.y, this.w, this.h,'White',this.color);
+	       viewPort.text(this.color,this.x,this.y,'White');
 	    }
         
     };
 
 Ball.prototype.draw = function()
     {
-	viewPort.circle(this.x, this.y, this.r, 0, 2 * Math.PI,null,this.color);
+	viewPort.circle(this.x, this.y, this.r, null,this.color);
     };
 
 
@@ -157,15 +166,15 @@ var tun = {
     ball : null,
     init : function()
 	{
-	    viewPort.init('tnlcvs');
-	    W = viewPort.cvs.width = window.innerWidth;
-	    this.bottom = H = viewPort.cvs.height = window.innerHeight;
-	    blockWidth = W / 4;
+	    viewPort.init('tnlcvs',window.innerWidth,window.innerHeight);
+	    W = window.innerWidth;
+	    this.bottom = H =  window.innerHeight;
+	    blockWidth = W / 6;
 	    blockHeight = H / 20;
 
 	    this.generate();
 	    
-	    this.ball = new Ball(W / 2, H - 150, -bmu, -bmu, 'white', 10);
+	    this.ball = new Ball(W / 2, H - 150, -bmu, -bmu, 'White', 10);
 	    bindEvents();
 	    var self = this;
 	    var hndl = window.setInterval(function()
@@ -234,7 +243,7 @@ var tun = {
 		    this.ball.bounceX();
 		} 
 
-	    var newBall = new Ball(ballNextX, ballNextY, 0, 0, '', this.ball.r),result;
+	    var newBall = new Ball(ballNextX, ballNextY, 0, 0, '', this.ball.r), result;
 	    for (i = this.blocks.length - 1;i > 0;i--)
 		{
 		    var thisBlock = this.blocks[i];
@@ -246,8 +255,11 @@ var tun = {
 			{
 			    result = collisionTest(newBall, thisBlock);
 			}
+			
+			
 		    if (result)
 			{
+			    //document.getElementById('score').innerText=this.ball.color +" "+ thisBlock.color;
 
 			    if (this.ball.color === thisBlock.color)
 				{
