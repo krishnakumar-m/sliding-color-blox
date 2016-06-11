@@ -1,52 +1,5 @@
-
-var viewPort = {
-    cvs : null,
-    ctx : null,
-    init : function(cvsid,w,h) {
-	this.cvs = document.getElementById(cvsid);
-	this.ctx = this.cvs.getContext('2d');
-	this.cvs.width = w || 0;
-	this.cvs.height = h || 0;
-    },
-    rect : function(x,y,w,h,strokeStyle,fillStyle) {
-	var ctx = this.ctx;
-	ctx.beginPath();
-        ctx.rect(x, y, w, h);
-        ctx.closePath();
-	if(fillStyle) {
-	    ctx.fillStyle = fillStyle;
-            ctx.fill();
-	}
-	if(strokeStyle) {
-	    ctx.strokeStyle = strokeStyle;
-	    ctx.stroke();
-	}
-    },
-    circle : function(x,y,r,strokeStyle,fillStyle) {
-	var ctx = this.ctx;
-	ctx.beginPath();
-        ctx.arc(x, y, r, 0, 2 * Math.PI);
-        ctx.closePath();
-	if(fillStyle) {
-	    ctx.fillStyle = fillStyle;
-            ctx.fill();
-	}
-	if(strokeStyle) {
-	    ctx.strokeStyle = strokeStyle;
-	    ctx.stroke();
-	}
-    },
-    clear : function() {
-	this.ctx.clearRect(0,0,this.cvs.width,this.cvs.height);
-    },
-    text : function(txt,x,y,style) {
-	this.ctx.fillStyle = style;
-	this.ctx.fillText(txt,x,y);
-    }
-};
-
 var colorMaster = ['Violet','Indigo','Blue','Green','Yellow','Red'];
-var W,H,um = 3,bmu=5;
+var W,H,um = 3,bmu=5,viewPort;
 
 var Shape = function(x, y, dx, dy, color)
     {
@@ -166,7 +119,7 @@ var tun = {
     ball : null,
     init : function()
 	{
-	    viewPort.init('tnlcvs',window.innerWidth,window.innerHeight);
+	    viewPort= new Canvas('tnlcvs',window.innerWidth,window.innerHeight);
 	    W = window.innerWidth;
 	    this.bottom = H =  window.innerHeight;
 	    blockWidth = W / 6;
