@@ -2,8 +2,8 @@
 function Canvas(cvsid,w,h) {
 	this.cvs = document.getElementById(cvsid);
 	this.ctx = this.cvs.getContext('2d');
-	this.cvs.width = w || 0;
-	this.cvs.height = h || 0;
+	this.width = this.cvs.width = w || 0;
+	this.height = this.cvs.height = h || 0;
 }
 
 Canvas.prototype.rect = function(x,y,w,h,strokeStyle,fillStyle) {
@@ -37,7 +37,8 @@ Canvas.prototype.rect = function(x,y,w,h,strokeStyle,fillStyle) {
 Canvas.prototype.clear = function() {
 	this.ctx.clearRect(0,0,this.cvs.width,this.cvs.height);
 };
-Canvas.prototype.text = function(txt,x,y,style) {
+Canvas.prototype.text = function(txt,x,y,style,font) {
 	this.ctx.fillStyle = style;
+	this.ctx.font=font;
 	this.ctx.fillText(txt,x,y);
 };

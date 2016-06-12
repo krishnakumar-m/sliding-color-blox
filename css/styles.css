@@ -14,6 +14,26 @@ canvas {
 .ball {
   border-radius: 25px;
 }
+
+#intro {
+  width:100%;
+  height:100%;
+  background-color: Black;
+  text-align:center;
+}
+#start {
+  font:30px Impact;
+}
+#gameover {
+  width:100%;
+  height:100%;
+  background-color: Black;
+  text-align:center;
+}
+#help{
+  color:White;
+  font-family:monospace;
+}
 #tunneltb{
   background-color:Black;
 }
@@ -22,14 +42,19 @@ canvas {
   height:40px;
 }
 #score {
-  position:fixed;
-  top:50px;
-  left:100px;
-  opacity: 0.5;
-  font-size:5pt;
-  text-align:right;
-  color:White;
-  z-index:100;
-  width:100px;
-  height:100px;
+  font-family: monospace;
+  color: White;
+  width:100%;
+}
+#tweet {
+  width:20%;
+  height:20%;
+}
+#restart {
+  width:20%;
+  height:20%;
+}
+.col{
+  width:50%;
+  float:left;
 }

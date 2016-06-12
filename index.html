@@ -12,8 +12,27 @@
 	alert([a,b,c,d,e].join(' '));
     };
     </script>
-  <body onload="tun.init();" >
-   
+  <body onload='bindEvents()'>
+    <div id="intro">
+	<img src='intro.jpg' width='75%' height='75%'>
+      <input type='button' id='start' value='START'>
+      <ul id='help'>
+	<li>Touch and hold sides to slide blocks.</li>
+	<li>Same colour ball breaks block.</li>
+	<li>Different colour bounces and changes colour.</li>
+	<li>If the ball goes down and out, Game Over!!</li>
+      </ul>
+    </div>
     <canvas id="tnlcvs" style='background-color:black;'></canvas>
+    <div id="gameover" style='display:none'>
+      <img src='GameOver.jpg' width='75%' height='75%'>
+      <div id='score'></div>
+      <div class="col">
+      <input type='image' id='restart' src='restart.png'>
+      </div>
+      <div class="col">
+      <input type='image' id='tweet' src='twitter.png'>
+      </div>
+    </div>
   </body>
 </html>		
