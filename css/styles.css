@@ -23,6 +23,7 @@ canvas {
 }
 #start {
   font:30px Impact;
+  width : 70%;
 }
 #gameover {
   width:100%;
@@ -46,7 +47,7 @@ canvas {
   color: White;
   width:100%;
 }
-#tweet {
+#email {
   width:20%;
   height:20%;
 }

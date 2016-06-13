@@ -296,21 +296,31 @@ function bindEvents() {
 	    }, false);
 
 
-	document.getElementById('start').onclick = function() {
+	document.getElementById('start').ontouchstart = function() {
 		document.getElementById('intro').style.display = 'none';
 		document.getElementById('tnlcvs').style.display = 'block';
 		tun.init();
 	    };
-
-        document.getElementById('restart').onclick = function() {
+	    
+	document.getElementById('restart').ontouchstart = function() {
 		document.getElementById('gameover').style.display = 'none';
 		document.getElementById('tnlcvs').style.display = 'block';
 		tun.init();
 	    };
-	document.getElementById('restart').onclick = function() {
+	document.getElementById('email').ontouchstart = function() {
+	        var sub = 'Feedback about SlideBlox';
+		window.open('mailto:krishnakumarm777@gmail.com?subject='+encodeURI(sub));
+	    };
+
+       /* document.getElementById('restart').onclick = function() {
+		document.getElementById('gameover').style.display = 'none';
+		document.getElementById('tnlcvs').style.display = 'block';
+		tun.init();
+	    };
+	document.getElementById('tweet').onclick = function() {
 	        var msg = 'I scored '+score.total+' points in #SlideBlox. Can you beat that?';
 		window.open('https://m.twitter.com?status='+encodeURI(msg),'_blank');
-	    };
+	    };*/
     }
 
 
