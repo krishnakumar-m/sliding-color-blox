@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <widget xmlns   = "http://www.w3.org/ns/widgets"
+        xmlns:gap   = "http://phonegap.com/ns/1.0"
+        id          = "com.kkm.slideblox"
+        versionCode = "1" 
+        version     = "1.0.0" >
+
+    <name>Slide Blox Game</name>
+
+    <description>
+        Breakout-like game where you slide the blocks; no paddle
+    </description>
+
+    <author href="https://build.phonegap.com" email="krishnakumarm777@gmail.com">
+        Krishnakumar Muraleedharan
+    </author>
+
+</widget>
