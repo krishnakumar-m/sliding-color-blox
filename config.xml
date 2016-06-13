@@ -14,13 +14,12 @@
     <author href="https://build.phonegap.com" email="krishnakumarm777@gmail.com">
         Krishnakumar Muraleedharan
     </author>
-    <icon src="icon.png" />
-    <icon src="ldpi.png" platform="android" qualifier="ldpi" />
+    <icon src="mdpi.png" />
 <icon src="mdpi.png" platform="android" qualifier="mdpi" />
 <icon src="hdpi.png" platform="android" qualifier="hdpi" />
 <icon src="xhdpi.png" platform="android" qualifier="xhdpi" />
 <icon src="xxhdpi.png" platform="android" qualifier="xxhdpi" />
-<icon src="fr-xxhdpi.png" platform="android" qualifier="fr-xxhdpi" />
+<icon src="xxxhdpi.png" platform="android" qualifier="xxxhdpi" />
     <platform name="android" >
   <preference name="orientation" value="portrait" />
 </platform>
