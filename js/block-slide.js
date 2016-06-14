@@ -51,16 +51,18 @@ Block.prototype.move = function() {
 
 Block.prototype.draw = function() {
 	var xs = this.x + this.w - W;
-	if(xs > 0) {
-		viewPort.rect(this.x, this.y, W - this.x, this.h, 'White', this.color);
-	        viewPort.rect(0, this.y, xs, this.h, 'White', this.color);
-		//viewPort.text(this.color, this.x, this.y, 'White');
-		//viewPort.text(this.color, 0, this.y, 'White');
-	    }
-	else {
-		viewPort.rect(this.x, this.y, this.w, this.h, 'White', this.color);
-		//viewPort.text(this.color, this.x, this.y, 'White');
-	    }
+if (xs > 0) {
+   var rad = {tl: 10, tr: 0, br: 0, bl: 10};
+   viewPort.roundRect(this.x, this.y,W - this.x, this.h, rad, this.color);
+   
+    rad = {tl: 0, tr: 10, br: 10, bl: 0};
+    viewPort.roundRect(0, this.y, xs, this.h, rad, this.color);
+    
+  } else {
+    //ctx.rect(this.x, this.y, this.w, this.h);
+  //  ctx.fill();
+  roundRect(ctx, this.x, this.y, this.w, this.h, 10, this.color);
+  }
 
     };
 
