@@ -161,7 +161,7 @@ var tun = {
 			    sounds.play('GameOver');
 			}
 		}, 300);*/
-		window.requestAnimationFrame(loop);
+		tun.hndl = window.requestAnimationFrame(loop);
 	},
     generate : function() {
 	    for(var i=0;i < H ;i += 4 * blockHeight) {
@@ -367,7 +367,7 @@ function collisionTest(circle,rect) {
 
 
       if (tun.ball.y > H) {
-        window.clearAnimationFrame(tun.hndl);
+        window.cancelAnimationFrame(tun.hndl);
         tun.gameover(score.total);
 	sounds.play('GameOver');
       }
