@@ -117,7 +117,9 @@ var sounds = {
 		    return;
 		}
 	    for(var i=0;i < arr.length;i++) {
-		    this.snds[arr[i]] = new Audio('../sounds/'+arr[i] + '.ogg');
+		     var aSound = new Audio();
+		    aSound.setAttribute('src','sounds/'+arr[i] + '.ogg');
+		    this.snds[arr[i]] = aSound;
 		}
 	},
     play : function(snd) {
@@ -371,6 +373,6 @@ function collisionTest(circle,rect) {
         tun.gameover(score.total);
 	sounds.play('GameOver');
       }
-      window.requestAnimationFrame(loop);
+      hndl = window.requestAnimationFrame(loop);
 }
     
