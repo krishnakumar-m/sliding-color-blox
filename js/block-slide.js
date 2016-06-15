@@ -117,7 +117,7 @@ var sounds = {
 		    return;
 		}
 	    for(var i=0;i < arr.length;i++) {
-		    this.snds[arr[i]] = new Audio(arr[i] + '.ogg');
+		    this.snds[arr[i]] = new Audio('../sounds/'+arr[i] + '.ogg');
 		}
 	},
     play : function(snd) {
