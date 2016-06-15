@@ -68,9 +68,11 @@ Canvas.prototype.roundRect = function(x, y, width, height, radius, fill, stroke)
   this.ctx.quadraticCurveTo(x, y, x + radius.tl, y);
   this.ctx.closePath();
   if (fill) {
+    this.ctx.fillStyle = fill;
     this.ctx.fill();
   }
   if (stroke) {
+    this.ctx.strokeStyle = fill;
     this.ctx.stroke();
   }
 

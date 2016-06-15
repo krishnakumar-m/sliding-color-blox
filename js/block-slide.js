@@ -61,7 +61,7 @@ if (xs > 0) {
   } else {
     //ctx.rect(this.x, this.y, this.w, this.h);
   //  ctx.fill();
-  roundRect(ctx, this.x, this.y, this.w, this.h, 10, this.color);
+  viewPort.roundRect(this.x, this.y, this.w, this.h, 10, this.color);
   }
 
     };
