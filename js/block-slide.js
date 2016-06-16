@@ -1,8 +1,9 @@
 
+
 	var colorMaster = [
 	    '#F7E700','#EB1E1E','#11CF7F','#53B7E6','#F067A7','#8623A1'
 	    ];
-	var W,H,um = 3,bmu=1,viewPort;
+	var W,H,um = 3,bmu=1,viewPort,frameInterval = 1000/60;;
 
 	var Shape = function(x,y,dx,dy,color) {
 		this.x = x;
@@ -81,71 +82,72 @@
 	    };
 
 
-	var score = {
-	    multiplier : 1,
-	    block : 10,
-	    minus : 1,
-	    total : 0,
-	    init : function() {
-		    this.multiplier = 1;
-		    this.total = 0;
-		},
-	    display : function() {
-		    viewPort.text(this.total, W / 2, H / 2, 'rgba(255,255,255,0.5)', '30px Verdana');
-		},
-	    breakBlock : function() {
-		    score.multiplier = score.multiplier - tun.ball.dy;
-		    if(score.multiplier < 1) {
-			    score.multiplier = 1;
-			}
-		    score.total += score.block * score.multiplier;
-		    if(score.total < 0) {
-			    score.total = 0;
-			}
-		    this.display();
-		},
-	    bounce : function() {
-		    score.total -= score.minus;
-		    if(score.total < 0) {
-			    score.total = 0;
-			}
-		    this.display();
+var score = {
+    multiplier : 1,
+    block : 10,
+    minus : 1,
+    total : 0,
+    init : function() {
+	    this.multiplier = 1;
+	    this.total = 0;
+	},
+    display : function() {
+	    viewPort.text(this.total, W / 2, H / 2, 'rgba(255,255,255,0.5)', '30px Verdana');
+	},
+    breakBlock : function() {
+	    score.multiplier = score.multiplier - tun.ball.dy;
+	    if(score.multiplier < 1) {
+		    score.multiplier = 1;
 		}
-	    };
-	var sounds = {
-	    snds : {},
-	    init : function(arr) {
-		    if(!window.Audio) {
-			    return;
-			}
-		    for(var i=0;i < arr.length;i++) {
-			    var aSound = new Audio();
-			    aSound.setAttribute('src', 'sounds/' + arr[i] + '.ogg');
-			    this.snds[arr[i]] = aSound;
-			}
-		},
-	    play : function(snd) {
-		    if(window.Audio) {
-			    this.snds[snd].play();
-			}
+	    score.total += score.block * score.multiplier;
+	    if(score.total < 0) {
+		    score.total = 0;
 		}
+	    this.display();
+	},
+    bounce : function() {
+	    score.total -= score.minus;
+	    if(score.total < 0) {
+		    score.total = 0;
+		}
+	    this.display();
+	}
+    };
+var sounds = {
+    snds : {},
+    init : function(arr) {
+	    if(!window.Audio) {
+		    return;
+		}
+	    for(var i=0;i < arr.length;i++) {
+		     var aSound = new Audio();
+		    aSound.setAttribute('src','sounds/'+arr[i] + '.ogg');
+		    this.snds[arr[i]] = aSound;
+		}
+	},
+    play : function(snd) {
+	    if(window.Audio) {
+		    this.snds[snd].play();
+		}
+	}
 
-	    };
-	var tun = {
-	    blocks :[],
-	    ball : null,
-	    init : function() {
-		    this.blocks = [];
-		    viewPort = new Canvas('tnlcvs', window.innerWidth, window.innerHeight);
-		    W = window.innerWidth;
-		    this.bottom = H =  window.innerHeight;
-		    blockWidth = Math.ceil(W / 6);
-		    blockHeight = H / 20;
-		    sounds.init(['BreakBlock','Bounce','GameOver']);
-		    score.init();
-		    this.generate();
+    };
+var tun = {
+    blocks :[],
+    ball : null,
+    init : function() {
+	    this.blocks = [];
+	    viewPort = new Canvas('tnlcvs', window.innerWidth, window.innerHeight);
+	    W = window.innerWidth;
+	    this.bottom = H =  window.innerHeight;
+	    blockWidth = Math.ceil(W / 6);
+	    blockHeight = H / 20;
+            sounds.init(['BreakBlock','Bounce','GameOver']);
+	    score.init();
+	    this.generate();
 
-		    this.ball = new Ball(W / 2, H - 150, -1, -1, 'White', 10);
+	    this.ball = new Ball(W / 2, H - 150, -1, -1, 'White', 10);
+	    lastTime = new Date().getTime();
 		    // bindEvents();
 		    /*var self = this;
 		     var hndl = window.setInterval(function() {
@@ -377,4 +379,3 @@
 		    }
 		hndl = window.requestAnimationFrame(loop);
 	    }
-	
