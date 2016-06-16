@@ -1,7 +1,7 @@
 var colorMaster = [
     '#F7E700','#EB1E1E','#11CF7F','#53B7E6','#F067A7','#8623A1'
     ];
-var W,H,um = 3,bmu=1,viewPort;
+var W,H,um = 3,bmu=1,viewPort,frameInterval = 1000/60;
 
 var Shape = function(x,y,dx,dy,color) {
 	this.x = x;
@@ -144,6 +144,7 @@ var tun = {
 	    this.generate();
 
 	    this.ball = new Ball(W / 2, H - 150, -1, -1, 'White', 10);
+	    lastTime = new Date().getTime();
 	    // bindEvents();
 	    /*var self = this;
 	    var hndl = window.setInterval(function() {
@@ -359,6 +360,9 @@ function collisionTest(circle,rect) {
     }
     
     function loop() {
+      var now = new Date().getTime();
+      var elapsed = now - lastTime;
+      if(elapsed >= frameInterval) {
       tun.collisionCheck();
       tun.ball.speed = bmu + Math.floor(score.total / 100);
       tun.ball.move();
@@ -374,5 +378,7 @@ function collisionTest(circle,rect) {
 	sounds.play('GameOver');
       }
       hndl = window.requestAnimationFrame(loop);
+      lastTime = new Date().getTime();
+      }
 }
     
