@@ -170,7 +170,7 @@ var tun = {
 		    tun.hndl = window.requestAnimationFrame(loop);
 		},
 	    generate : function() {
-		    for(var i=0;i < H ;i += 4 * blockHeight) {
+		    for(var i=0;i < H ;i += 6 * blockHeight) {
 			    this.generateRow(i);
 			}
 		},
@@ -291,7 +291,7 @@ var tun = {
 					tun.blocks[i].dx = ((touchX > W / 2) ?um: -um);
 					tun.blocks[i].move();
 				    }
-			    }, 200);
+			    }, frameInterval);
 		    };
 		document.getElementById('tnlcvs').ontouchend = function() {
 			window.clearInterval(hndlt);
