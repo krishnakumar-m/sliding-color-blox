@@ -145,7 +145,7 @@ var tun = {
 	    score.init();
 	    this.generate();
 
-	    this.ball = new Ball(W / 2, 17 * blockHeight, -bmu, -bmu, 'White', 10, bmu);
+	    this.ball = new Ball(W / 2, 17 * blockHeight, -1, -1, 'White', 10, bmu);
 	    lastTime = new Date().getTime();
 	    tun.hndl = window.requestAnimationFrame(loop);
 	},
