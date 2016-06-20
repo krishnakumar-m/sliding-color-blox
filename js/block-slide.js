@@ -135,7 +135,6 @@ var tun = {
     blocks :[],
     ball : null,
     init : function() {
-	    alert(frameInterval);
 	    this.blocks = [];
 	    viewPort = new Canvas('tnlcvs', window.innerWidth, window.innerHeight);
 	    W = window.innerWidth;
@@ -272,7 +271,6 @@ function bindEvents() {
 
 
 	document.getElementById('start').ontouchstart = function() {
-		alert(frameInterval);
 		document.getElementById('intro').style.display = 'none';
 		document.getElementById('tnlcvs').style.display = 'block';
 		tun.init();
