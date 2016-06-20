@@ -2,7 +2,7 @@
 var colorMaster = [
     '#F7E700','#EB1E1E','#11CF7F','#53B7E6','#F067A7','#8623A1'
     ];
-var W,H,um = 3,bmu=1,viewPort,frameInterval = 1000 / 60;;
+var W,H,um = 1,bmu=1,viewPort,frameInterval = 1000 / 60;;
 
 var Shape = function(x,y,dx,dy,color) {
 	this.x = x;
@@ -17,10 +17,10 @@ Shape.prototype.move = function() {
 	this.y += this.dy * this.speed;
     };
 
-var Ball = function(x,y,dx,dy,color,r) {
+var Ball = function(x,y,dx,dy,color,r,speed) {
 	Shape.call(this, x, y, dx, dy, color);
 	this.r = r;
-	this.speed = bmu;
+	this.speed = speed;
     };
 
 var Block = function(x,y,dx,dy,color,w,h) {
@@ -52,6 +52,7 @@ Block.prototype.move = function() {
 
 Block.prototype.draw = function() {
 	var xs = this.x + this.w - W;
+	//viewPort.text('('+this.x+','+this.y+')',this.x,this.y,'White','12px Verdana');
 	if(xs > 0) {
 		var rad = {tl: 10, tr: 0, br: 0, bl: 10};
 		viewPort.roundRect(this.x, this.y, W - this.x, this.h, rad, this.color);
@@ -59,14 +60,16 @@ Block.prototype.draw = function() {
 		rad = {tl: 0, tr: 10, br: 10, bl: 0};
 		viewPort.roundRect(0, this.y, xs, this.h, rad, this.color);
 
-	} else {
+	    }
+	else {
 		viewPort.roundRect(this.x, this.y, this.w, this.h, 10, this.color);
-	}
+	    }
 
     };
 
 Ball.prototype.draw = function() {
 	viewPort.circle(this.x, this.y, this.r, null, this.color);
+	//viewPort.text('('+this.x+','+this.y+','+this.speed+','+this.dx+','+this.dy+')',this.x,this.y,'White','12px Verdana');
     };
 
 
@@ -132,17 +135,18 @@ var tun = {
     blocks :[],
     ball : null,
     init : function() {
+	    alert(frameInterval);
 	    this.blocks = [];
 	    viewPort = new Canvas('tnlcvs', window.innerWidth, window.innerHeight);
 	    W = window.innerWidth;
 	    this.bottom = H =  window.innerHeight;
 	    blockWidth = Math.ceil(W / 6);
-	    blockHeight = H / 20;
+	    blockHeight = Math.round(H / 20);
             sounds.init(['BreakBlock','Bounce','GameOver']);
 	    score.init();
 	    this.generate();
 
-	    this.ball = new Ball(W / 2, H - 150, -1, -1, 'White', 10);
+	    this.ball = new Ball(W / 2, 17 * blockHeight, -bmu, -bmu, 'White', 10, bmu);
 	    lastTime = new Date().getTime();
 	    tun.hndl = window.requestAnimationFrame(loop);
 	},
@@ -191,10 +195,11 @@ var tun = {
 		    this.ball.bounceY();
 		}
 	    var newBall = new Ball(ballNextX, ballNextY, 0, 0, '', this.ball.r), result;
-	    for(i = this.blocks.length - 1;i > 0;i--) {
+	    for(i = this.blocks.length - 1;i >= 0;i--) {
 		    var thisBlock = this.blocks[i];
 		    if(thisBlock.right() < thisBlock.x) {
 			    result = collisionTest(newBall, new Block(0, thisBlock.y, 0, 0, '', thisBlock.right(), thisBlock.h)) || collisionTest(newBall, new Block(thisBlock.x, thisBlock.y, 0, 0, '', thisBlock.w - thisBlock.right(), thisBlock.h));
+
 			}
 		    else {
 			    result = collisionTest(newBall, thisBlock);
@@ -202,7 +207,6 @@ var tun = {
 
 
 		    if(result) {
-
 			    if(this.ball.color === thisBlock.color) {
 				    this.blocks.splice(i, 1);
 				    score.breakBlock();
@@ -268,6 +272,7 @@ function bindEvents() {
 
 
 	document.getElementById('start').ontouchstart = function() {
+		alert(frameInterval);
 		document.getElementById('intro').style.display = 'none';
 		document.getElementById('tnlcvs').style.display = 'block';
 		tun.init();
@@ -315,19 +320,25 @@ function collisionTest(circle,rect) {
     }
 
 function loop() {
-	tun.collisionCheck();
-	tun.ball.speed = bmu + Math.floor(score.total / 100);
-	tun.ball.move();
-	if(tun.ball.y <= (tun.bottom / 2)) {
-		tun.moveUp();
-	    }
-	tun.display();
+        var now = new Date().getTime();
+	var elapsed = now - lastTime;
+	if(elapsed >= frameInterval) {
+		if(tun.ball.y <= (tun.bottom / 2)) {
+			tun.moveUp();
+		    }
+		tun.collisionCheck();
+		tun.ball.speed = bmu + Math.round(score.total / 100);
+		tun.ball.move();
+		tun.display();
 
 
-	if(tun.ball.y > H) {
-		window.cancelAnimationFrame(tun.hndl);
-		tun.gameover(score.total);
-		sounds.play('GameOver');
+		if(tun.ball.y > H) {
+			window.cancelAnimationFrame(tun.hndl);
+			tun.gameover(score.total);
+			sounds.play('GameOver');
+		    }
+		
+		lastTime = new Date().getTime();
 	    }
 	hndl = window.requestAnimationFrame(loop);
     }
