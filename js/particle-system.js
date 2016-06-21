@@ -3,8 +3,8 @@ var PS ={};
 PS.Config = {
     VEL_X : {MIN:-5,MAX:5},
     VEL_Y : {MIN:-1,MAX:1},
-    ACC_X : {MIN:-1,MAX:1},
-    ACC_Y : {MIN:-1,MAX:1},
+    ACC_X : {MIN:0,MAX:0},
+    ACC_Y : {MIN:0,MAX:0},
     SIZE : {MIN:5, MAX:15},
     LIFE : {MIN:5,MAX:60},
     START_COLOR : {r:255,g:255,b:0},

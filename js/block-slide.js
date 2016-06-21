@@ -155,11 +155,12 @@ var tun = {
 	    for(var i=0;i < H ;i += 6 * blockHeight) {
 		    this.generateRow(i);
 		}
+		this.top = 0;
 	},
 
     moveUp : function() {
 	    var createNew = false;
-
+this.top++;
 	    for(i = this.blocks.length - 1;i >= 0;i--) {
 		    this.blocks[i].y += um;
 		    if(this.blocks[i].y > this.bottom) {
@@ -168,8 +169,9 @@ var tun = {
 			}
 
 		}
-	    if(createNew) {
+	    if(this.top >= 5* blockHeight) {
 		    this.generateRow(0);
+		    this.top = 0;
 		}
 	},
 
