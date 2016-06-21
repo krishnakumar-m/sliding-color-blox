@@ -143,6 +143,8 @@ var tun = {
 	    blockHeight = Math.round(H / 20);
             sounds.init(['BreakBlock','Bounce','GameOver']);
 	    score.init();
+	    partSys.init();
+	    partSys.run();
 	    this.generate();
 
 	    this.ball = new Ball(W / 2, 17 * blockHeight, -1, -1, 'White', 10, bmu);
@@ -207,6 +209,7 @@ var tun = {
 
 		    if(result) {
 			    if(this.ball.color === thisBlock.color) {
+				    partSys.add(new ParticleSystem(100,thisBlock.x+thisBlock.w/2,thisBlock.y+thisBlock.h/2,viewPort.ctx,false));
 				    this.blocks.splice(i, 1);
 				    score.breakBlock();
 				    sounds.play('BreakBlock');
@@ -235,6 +238,7 @@ var tun = {
 		}
 	    this.ball.draw();
 	    score.display();
+	    
 	},
     gameover : function(score) {
 	    document.getElementById('intro').style.display = 'none';
@@ -335,6 +339,9 @@ function loop() {
 			tun.gameover(score.total);
 			sounds.play('GameOver');
 		    }
+		    
+		partSys.update();
+		partSys.show();
 		
 		lastTime = new Date().getTime();
 	    }
