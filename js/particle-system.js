@@ -13,7 +13,7 @@ var config = {
     minLife : 5,
     maxLife : 60,
     startColor : {r:255,g:255,b:0},
-    endColor : {r:255,g:0,b:0}
+    endColor : {r:255,g:255,b:255}
     
 };
 
