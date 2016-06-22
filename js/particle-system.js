@@ -1,11 +1,11 @@
 
 var config = {
-    minVelX : -5,
+    minVelX :-5,
     minVelY :-1,
     maxVelX : 5,
-    maxVelY :1,
+    maxVelY : 1,
     minAccX : 0,
-    minAccY :0,
+    minAccY : 0,
     maxAccX : 0,
     maxAccY : 0,
     minSize : 5,
