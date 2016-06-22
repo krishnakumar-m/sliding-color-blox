@@ -2,6 +2,14 @@
 var colorMaster = [
     '#F7E700','#EB1E1E','#11CF7F','#53B7E6','#F067A7','#8623A1'
     ];
+    
+function returnRGB(colStr) {
+    var hex = "0123456789ABCDEF";
+    var r = hex.indexOf(colStr.charAt(1))*16+hex.indexOf(colStr.charAt(2));
+    var g = hex.indexOf(colStr.charAt(3))*16+hex.indexOf(colStr.charAt(4));
+    var b = hex.indexOf(colStr.charAt(5))*16+hex.indexOf(colStr.charAt(6));
+    return { r:r,g:g,b:b};
+}
 var W,H,um = 1,bmu=1,viewPort,frameInterval = 1000 / 60;;
 
 var Shape = function(x,y,dx,dy,color) {
@@ -211,7 +219,8 @@ this.top++;
 
 		    if(result) {
 			    if(this.ball.color === thisBlock.color) {
-				    partSys.add(new ParticleSystem(100,thisBlock.x+thisBlock.w/2,thisBlock.y+thisBlock.h/2,viewPort.ctx,false));
+				    config.startColor = returnRGB(thisBlock.color);
+				    partSys.add(new ParticleSystem(100,thisBlock.x+thisBlock.w/2,thisBlock.y+thisBlock.h/2,viewPort.ctx,config,false));
 				    this.blocks.splice(i, 1);
 				    score.breakBlock();
 				    sounds.play('BreakBlock');

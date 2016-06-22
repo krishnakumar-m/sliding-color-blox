@@ -1,20 +1,24 @@
 
-var PS ={};
-PS.Config = {
-    VEL_X : {MIN:-5,MAX:5},
-    VEL_Y : {MIN:-1,MAX:1},
-    ACC_X : {MIN:0,MAX:0},
-    ACC_Y : {MIN:0,MAX:0},
-    SIZE : {MIN:5, MAX:15},
-    LIFE : {MIN:5,MAX:60},
-    START_COLOR : {r:255,g:255,b:0},
-    END_COLOR : {r:255,g:0,b:0}
+var config = {
+    minVelX : -5,
+    minVelY :-1,
+    maxVelX : 5,
+    maxVelY :1,
+    minAccX : 0,
+    minAccY :0,
+    maxAccX : 0,
+    maxAccY : 0,
+    minSize : 5,
+    maxSize : 15,
+    minLife : 5,
+    maxLife : 60,
+    startColor : {r:255,g:255,b:0},
+    endColor : {r:255,g:0,b:0}
+    
+};
 
-    };
-
-
-function getRandomInt(range) {
-	var min = range.MIN, max = range.MAX;
+function getRandomInt(min, max) {
+	//var min = range.MIN, max = range.MAX;
 	return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
@@ -30,24 +34,23 @@ function Point(x,y) {
 
 
 
-function Particle(x,y,size,maxlife,ctx,startColor,endColor) {
+function Particle(x,y,ctx,config) {
 	this.loc = new Point(x, y);
-	this.vel = new Point(getRandomInt(PS.Config.VEL_X) , getRandomInt(PS.Config.VEL_Y));
+	this.vel = new Point(getRandomInt(config.minVelX,config.maxVelX) , getRandomInt(config.minVelY,config.maxVelY));
 
-	this.acc = new Point(getRandomInt(PS.Config.ACC_X), getRandomInt(PS.Config.ACC_Y));
+	this.acc = new Point(getRandomInt(config.minAccX,config.maxAccX), getRandomInt(config.minAccY,config.maxAccY));
 
-	this.size = size;
-	this.life = maxlife;
-	this.maxLife = maxlife;
+	this.size = getRandomInt(config.minSize,config.maxSize);
+	this.maxLife = this.life = getRandomInt(config.minLife,config.maxLife);
 	this.ctx = ctx;
-	this.startColor = startColor || {r:0,g:0,b:0};
-	this.endColor = endColor || {r:255,g:255,b:255};
+	this.startColor = config.startColor || {r:0,g:0,b:0};
+	this.endColor = config.endColor || {r:255,g:255,b:255};
 	this.color = {r:this.startColor.r, g:this.startColor.g,b:this.startColor.b};
 
 	this.colorRange = {};
-	this.colorRange["r"] = this.endColor.r - this.startColor.r;
-	this.colorRange["g"] = this.endColor.g - this.startColor.g;
-	this.colorRange["b"] = this.endColor.b - this.startColor.b;
+	this.colorRange.r = this.endColor.r - this.startColor.r;
+	this.colorRange.g = this.endColor.g - this.startColor.g;
+	this.colorRange.b = this.endColor.b - this.startColor.b;
 
 	this.update = function() {
 
@@ -76,18 +79,18 @@ function Particle(x,y,size,maxlife,ctx,startColor,endColor) {
 	    };
     }
 
-function ParticleSystem(max,x,y,ctx,loop) {
+function ParticleSystem(max,x,y,ctx,config,loop) {
 	this.particles = [];
 	this.count = max;
 	this.x = x;
 	this.y = y;
-
+        this.config = config;
 	this.ctx = ctx;
 	this.init = function() {
 		var i;
 		for(i = 0;i < this.count;i++) {
 
-			this.particles[i] = new Particle(this.x, this.y, getRandomInt(PS.Config.SIZE), getRandomInt(PS.Config.LIFE), this.ctx, PS.Config.START_COLOR, PS.Config.END_COLOR);
+			this.particles[i] = new Particle(this.x, this.y, this.ctx, this.config);
 
 		    }
 	    };
@@ -101,7 +104,7 @@ function ParticleSystem(max,x,y,ctx,loop) {
 
 			if(this.particles[i].life <= 0 || this.particles[i].size <= 0) {
 				if(this.loop) {
-					this.particles[i] = new Particle(this.x, this.y, getRandomInt(PS.Config.SIZE), getRandomInt(PS.Config.LIFE), this.ctx, PS.Config.START_COLOR, PS.Config.END_COLOR);
+					this.particles[i] = new Particle(this.x, this.y, this.ctx, this.config);
 				    }
 				else {
 					this.particles.splice(i, 1);
